@@ -90,10 +90,12 @@ TestAbstractPlayer : UnitTest {
 	}
 	test_prepareToBundle {
 		bundle = MixedBundleTester.new;
+		group = Group.basicNew(s);
+
 		player.prepareToBundle(group,bundle,true, bus, false);
 		this.assertEquals(player.status,\isPreparing);
-		this.assertEquals(player.group, group, "group should be set");
-		this.assertEquals(player.server, s, "server should be set");
+		this.assertEquals(player.group, group, "group should be set to" + group);
+		this.assertEquals(player.server, s, "server should be set to" + s);
 
 		// patchOut
 		this.assert(player.patchOut.notNil,"should make patch out");
