@@ -1,36 +1,44 @@
 
 TestFlowView : UnitTest {
 	
+	var w;
+	var <>leaveWindowsOpen = false;
+	
+	setUp {
+		w = Window.new;
+		if(leaveWindowsOpen,{ w.front })
+	}
+	tearDown {
+		if(leaveWindowsOpen.not,{
+			if(w.notNil,{ w.close })
+		})
+	}
 	test_startRow {
 		var f,g,a,b,c;
 
-		g = SCWindow.new;
-		//g.front;
-		f = FlowView.new(g);
+		f = FlowView.new(w);
 		
 
-		a = SCSlider(f,Rect(0,0,100,100));
-		b = SCSlider(f,Rect(0,0,100,100));
+		a = Slider(f,Rect(0,0,100,100));
+		b = Slider(f,Rect(0,0,100,100));
 		f.startRow;
-		c = SCSlider(f,Rect(0,0,100,100));
+		c = Slider(f,Rect(0,0,100,100));
 
 	
 		this.assert( a.bounds.left < b.bounds.left,"b should not be on a new row, it should be to the right of a");
 		this.assert( a.bounds.left == c.bounds.left,"a and c should be aligned on the left edge");
 		
-		g.close;
 	}
 	
 	test_removeAll {
 		var f,g,k;
 
-		g = SCWindow.new;
 		//g.front;
-		f = FlowView.new(g);
+		f = FlowView.new(w);
 
 		ActionButton(f,"a");
 
-		SCSlider(f,Rect(0,0,100,100));
+		Slider(f,Rect(0,0,100,100));
 
 		// this is the problem: the start rows don't get removed
 		f.startRow;
@@ -43,9 +51,8 @@ TestFlowView : UnitTest {
 		
 		this.assertEquals( f.children.size, 0 , "after removeAll there should be 0 children");
 		k.do({ |oldchild|
-			this.assert( oldchild.isClosed,"children views should all now be isClosed, but this one isn't: "+oldchild )
+			this.assert( oldchild.isClosed,"children views should all now be isClosed : " + oldchild )
 		});
-		g.close;
 	}
 	
 	test_flow { 
@@ -70,9 +77,21 @@ TestFlowView : UnitTest {
 
 		this.assertEquals( innerFlow.absoluteBounds.moveTo(0,0),Rect(0,0, 100, 100),
 					" flow should not resizeToFit if the bounds passed to it were explicit");
-		// w.close
+		w.close
 	}
 	
+	test_indentedRemaining {
+		var b,p,f;
+		f = FlowView(w);
+		Slider(f,100@10);
+		f.startRow;
+		b = f.indentedRemaining;
+		p = f.bounds;
+		this.assert(p.containsRect(b),"indented remaining should be inside parent");
+		this.assert(p.height > b.height,"indentedRemaining height should be smaller than parent");
+		this.assertEquals(p.width, (b.width + (f.decorator.gap.x)),
+			"indentedRemaining width should be equal to parent plus gap");
+	}
 	
 	/*
 
