@@ -1,7 +1,32 @@
 
+
+TestNumberEditor : UnitTest {
+	var w;
+
+	setUp {
+		w = Window.new;
+	}
+	tearDown {
+		if(w.notNil,{
+			w.close
+		})
+	}
+	prDoSizeTest { arg rect;
+		var g;
+		Environment.use({
+			(Quarks.local.path +/+ Quark.find("ServerTools").path +/+ "scripts" +/+ "guiDebugger.scd").loadPath;
+		
+			g = NumberEditor.new.gui(w,rect);
+			this.assert( ~childrenExceedingParents.value(g.view).size == 0, "child should not exceed parent" );
+		})
+	}
+	test_sizing_1 {
+		this.prDoSizeTest(160@17);
+	}
+}
+
 TestKrNumberEditor : UnitTest {
-	
-	
+
 	test_canAccept {
 		var k,c,s;
 		k = KrNumberEditor(6.0,ControlSpec(0, 11, 'linear', 1, 6, ""));
@@ -23,7 +48,8 @@ TestKrNumberEditor : UnitTest {
 		k = KrNumberEditor(440,\freq);
 		this.assert(k.spec.isKindOf(ControlSpec),"is control spec");
 	}
-
 }
+
+
 
 
