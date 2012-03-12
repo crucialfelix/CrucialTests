@@ -1,7 +1,7 @@
 
 TestPlayerSocket : UnitTest {
 	
-	var s,b,p,g,b,n;
+	var s,b,p,g,n;
 	
 	setUp {
 		s = Server.default;
