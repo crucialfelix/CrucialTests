@@ -113,7 +113,16 @@ TestAbstractPlayer : UnitTest {
 		player.loadDefFileToBundle( bundle,s);
 	}
 
-
+	test_onPlay {
+		var played=false;
+		player.onPlay({ played = true });
+		player.play;
+		this.wait({
+			played == true
+		},"should fire onPlay");
+	}
+		//p.onStop({ "stopped".postln });
+		//p.play
 
 }
 

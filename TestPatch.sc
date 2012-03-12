@@ -138,6 +138,69 @@ TestPatch : TestAbstractPlayer {
 		
 		this.startStopStart;
 	}
+
+
+	test_onPlay {
+		var p,played=false;
+		p = Patch({
+			SinOsc.ar * EnvGen.kr(Env.perc,doneAction:2)
+		});
+		p.onPlay({ played = true });
+		p.play;
+		this.wait({
+			played == true
+		},"should fire onPlay");
+		p.free
+	}
+	test_onStop {
+		var p,stopped=false;
+		p = Patch({
+			SinOsc.ar * EnvGen.kr(Env.perc,doneAction:2)
+		});
+		p.onStop({ stopped = true });
+		p.onPlay({
+			p.stop;
+		});
+		p.play;
+		this.wait({
+			stopped == true
+		},"should fire onStop");
+		p.free
+	}
+	test_onReady {
+		var p,ready=false;
+		p = Patch({
+			SinOsc.ar * EnvGen.kr(Env.perc,doneAction:2)
+		});
+		p.onReady({ ready = true });
+		p.prepareForPlay();
+		this.wait({
+			ready == true
+		},"should fire onReady");
+		p.free
+	}
+	test_freeOnStop {
+		var p,stopped=false;
+		p = Patch({
+			SinOsc.ar * EnvGen.kr(Env.perc,doneAction:2)
+		});
+		p.freeOnStop;
+		p.onPlay({
+			p.stop
+		});
+		p.play;
+		this.wait({
+			p.status == \isFreed
+		},"status should go to isFreed");
+		this.assertEquals(p.status,\isFreed)
+	}	
+
+
+	
+		//p.onStop({ "stopped".postln });
+		//p.play
+
+
 		
 	/*
 	test_patchInPatch {
