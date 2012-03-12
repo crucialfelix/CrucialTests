@@ -14,7 +14,7 @@ TestSample : UnitTest {
 	}
 	test_gui {
 		var w,c,y,v;
-		w = SCWindow.new("soundfile should be in top left of the blue composite", Rect(200, 200, 800, 400));
+		w = Window.new("soundfile should be in top left of the blue composite", Rect(200, 200, 800, 400));
 
 		//c = SCCompositeView(w,Rect(100,100,700,300));
 		//c.relativeOrigin = true;
