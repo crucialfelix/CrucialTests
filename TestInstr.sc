@@ -137,6 +137,34 @@ TestInstr : UnitTest {
 		// its in quarks/CrucialTests/Instr/subfolder/subinstr.scd
 		this.assert(find.notNil,"should find the file for subfolder.subinstr.one");
 	}
+	test_value {
+		var i,result;
+		i = Instr("_test.value",{ arg a,b=2; a + b });
+		result = i.value([1]);
+		this.assertEquals(result,3);
+
+		result = i.value([1,3]);
+		this.assertEquals(result,4);
+
+		result = i.value( (a:1) );
+		this.assertEquals(result,3);
+
+		result = i.value((a:1,b:3));
+		this.assertEquals(result,4);
+		
+		i = Instr("_test.value",{ arg a=1,b=2; a + b });
+		result = i.value();
+		this.assertEquals(result,3);
+
+		result = i.value( () );
+		this.assertEquals(result,3);
+	}
+	
+	test_add {
+		var i,result;
+		i = Instr("_test.add",{ arg freq=770,amp=0.5; SinOsc.ar(freq) * amp },[],\audio);
+		i.add
+	}
 }
 
 TestPappliedInstr : UnitTest {
