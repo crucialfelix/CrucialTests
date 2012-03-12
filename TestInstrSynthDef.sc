@@ -9,6 +9,8 @@ TestInstrSynthDef : UnitTest {
 			[\kr,1,"yellow",IdentityDictionary.new]
 			
 		].do { arg thing;
+			// can't figure out what to test yet
+			// just posting
 			"".postln;
 			thing.hash.debug(thing);
 			InstrSynthDef.hashEncode(thing).debug(thing)
