@@ -36,14 +36,14 @@ TestFlowView : UnitTest {
 		//g.front;
 		f = FlowView.new(w);
 
-		ActionButton(f,"a");
+		Button(f,Rect(0,0,100,17)).states_([["a"]]);
 
 		Slider(f,Rect(0,0,100,100));
 
 		// this is the problem: the start rows don't get removed
 		f.startRow;
 
-		ActionButton(f,"next line");
+		Button(f,Rect(0,0,100,17)).states_([["next line"]]);
 
 		//
 		k = f.children;
@@ -57,27 +57,20 @@ TestFlowView : UnitTest {
 	
 	test_flow { 
 		// this is a minor change in  behavior that would affect the swing method too
-		var w;
 		var comp,innerFlow;
-		w = Sheet({ |f|
-
+		w.flow({ arg f;
 			f.comp({ |comp|
-
 				innerFlow = comp.flow({ arg layout;
-
 					//ActionButton(layout,"yo");
 				},Rect(100,100,100,100))
 				.background = Color.blue;
 		
 			},Rect(0,0,500,500))
 			.background_(Color.red)
-	
 		});
-
 
 		this.assertEquals( innerFlow.absoluteBounds.moveTo(0,0),Rect(0,0, 100, 100),
 					" flow should not resizeToFit if the bounds passed to it were explicit");
-		w.close
 	}
 	
 	test_indentedRemaining {
@@ -93,6 +86,18 @@ TestFlowView : UnitTest {
 			"indentedRemaining width should be equal to parent plus gap");
 	}
 	
+	
+	test_withNilBounds {
+		var f,c,fb,cb;
+		c = CompositeView(w,Rect(100,100,200,200));
+		// nil bounds
+		f = FlowView(c);
+		c.background = Color.rand;
+		f.background = Color.rand;
+		cb = c.absoluteBounds;
+		fb = f.absoluteBounds;
+		this.assertEquals( cb.origin, fb.origin, "with no supplied bounds, origin should be at the parent's origin");	
+	}
 	/*
 
 w = GUI.window.new;
