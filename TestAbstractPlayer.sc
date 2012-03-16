@@ -14,7 +14,9 @@ TestAbstractPlayer : UnitTest {
 		Instr.clearAll;
 		InstrSynthDef.clearCache(s);
 		s = Server.default;
-
+		//s.freeAll;
+		//s.newAllocators;
+		
 		MixedBundleTester.reset;
 		AbstractPlayer.bundleClass = MixedBundleTester;
 
@@ -25,10 +27,11 @@ TestAbstractPlayer : UnitTest {
 	}
 	tearDown {
 		AbstractPlayer.bundleClass = MixedBundle;
+		s.freeAll;
 	}
 
 	startPlayer {
-		this.bootServer;
+		this.bootServer; // new allocators !
 		0.1.wait;
 		group = Group.basicNew(s);
 		bus = this.makeBus;
@@ -60,8 +63,12 @@ TestAbstractPlayer : UnitTest {
 			// but ususually uses a SharedBus in that case
 			bus.free;
 		});
-		
-		this.assertEquals( s.audioBusAllocator.blocks.size,0,"should be no busses allocated now");
+		if(s.numSynths > 0,{
+			s.queryAllNodes
+		});
+		this.assertEquals( s.audioBusAllocator.blocks.size,0,"there should be no busses allocated now");
+		this.assertEquals( s.controlBusAllocator.blocks.size,0,"there should be no control busses allocated now");
+		this.assertEquals( s.numSynths, 0, "no synths should be running");
 	}
 	startStopStart {
 		this.startPlayer;
