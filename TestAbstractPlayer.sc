@@ -73,13 +73,13 @@ TestAbstractPlayer : UnitTest {
 	}
 	startStopStart {
 		this.startPlayer;
-		1.0.wait;
+		this.wait({player.isPlaying});
 		this.stopPlayer;
-		1.0.wait;
+		this.wait({player.isPlaying.not});
 		this.startPlayer;
-		1.0.wait;
+		this.wait({player.isPlaying});
 		this.stopPlayer;
-		1.0.wait;
+		this.wait({player.isPlaying.not});
 	}
 	
 	test_play {
