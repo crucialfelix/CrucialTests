@@ -20,7 +20,8 @@ TestAbstractPlayer : UnitTest {
 		MixedBundleTester.reset;
 		AbstractPlayer.bundleClass = MixedBundleTester;
 
-		player = this.makePlayer.checkKind(AbstractPlayer);
+		player = this.makePlayer;
+		this.assert(player.isKindOf(AbstractPlayer));
 
 		bundle = MixedBundleTester.new;
 		group = bus = nil; // you must make these yourself
