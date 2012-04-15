@@ -23,5 +23,17 @@ TestKeyResponder : UnitTest {
 			"parent".postln
 		}
 	}
+	test_char {
+		var w,x,k;
+		FlowView.layout({ arg w;
+			"control-c should print copy".gui(w);
+			x = Slider.new(w);
+			k = KeyResponder.new;
+			k.register(   8  ,   false, false, false, true, {
+				"copy".postln;
+			});
+			x.keyDownAction = k;
+		});
+	}
 }
 

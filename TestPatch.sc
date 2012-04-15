@@ -86,6 +86,7 @@ TestPatch : TestAbstractPlayer {
 				k = KrNumberEditor(440,\freq)
 			,	0.3 ]);
 		p.play;
+		0.5.wait;
 		this.wait({p.isPlaying},"wait patch playing");
 		0.5.wait;
 		spo = p.patchIns.first.connectedTo;
@@ -158,6 +159,18 @@ TestPatch : TestAbstractPlayer {
 			SinOsc.ar * EnvGen.kr(Env.perc,doneAction:2)
 		});
 		p.onStop({ stopped = true });
+		p.play;
+		this.wait({
+			stopped == true
+		},"should fire onStop");
+		p.free
+	}
+	test_onStop_external {
+		var p,stopped=false;
+		p = Patch({
+			SinOsc.ar
+		});
+		p.onStop({ stopped = true });
 		p.onPlay({
 			p.stop;
 		});
@@ -167,6 +180,10 @@ TestPatch : TestAbstractPlayer {
 		},"should fire onStop");
 		p.free
 	}
+	/*
+		issue:  onStop with immediate onPlay
+			results in synth set to nil by didStop
+	*/
 	test_onReady {
 		var p,ready=false;
 		p = Patch({
@@ -195,7 +212,23 @@ TestPatch : TestAbstractPlayer {
 		this.assertEquals(p.status,\isFreed)
 	}	
 
-
+	test_onPoll {
+		var p,vals;
+		vals = List.new;
+		p = Patch({
+			var b;
+			b = BrownNoise.ar(1.0);
+			b.onPoll({ arg v;
+				vals.add(v);
+			});
+			b * 0.2
+		});
+		p.play;
+		0.5.wait;
+		p.stop;
+		this.assert(vals.size > 0,"should have collected some values");
+		this.assert(vals.every({ arg v; v.inclusivelyBetween(-1,1) }),"values should be bipolar");
+	}
 	
 		//p.onStop({ "stopped".postln });
 		//p.play

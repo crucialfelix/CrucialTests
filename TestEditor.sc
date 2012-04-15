@@ -2,26 +2,41 @@
 
 TestNumberEditor : UnitTest {
 	var w;
-
+	classvar <>front=false;
 	setUp {
 		w = Window.new;
+		if(front,{
+			w.front;
+		})
 	}
 	tearDown {
-		if(w.notNil,{
+		if(w.notNil and: {front.not},{
 			w.close
 		})
 	}
 	prDoSizeTest { arg rect;
 		var g;
 		Environment.use({
+			var fails;
 			(Quarks.local.path +/+ Quark.find("ServerTools").path +/+ "scripts" +/+ "guiDebugger.scd").loadPath;
 		
 			g = NumberEditor.new.gui(w,rect);
-			this.assert( ~childrenExceedingParents.value(g.view).size == 0, "child should not exceed parent" );
+			fails = ~childrenExceedingParents.value(g.view);
+			fails.do { arg view;
+				("View exceeds parent:" + view + view.parent).postln;
+				[view.absoluteBounds,view.parent.absoluteBounds].postln;
+			};
+			this.assert( fails.size == 0, "no child should exceed parent" );
 		})
 	}
 	test_sizing_1 {
 		this.prDoSizeTest(160@17);
+	}
+	test_sizing_2 {
+		this.prDoSizeTest(20@191);
+	}
+	test_sizing_3 {
+		this.prDoSizeTest(40@150);
 	}
 }
 
