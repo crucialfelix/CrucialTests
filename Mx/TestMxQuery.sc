@@ -13,7 +13,10 @@ TestMxQuery : MxAppTester {
 		^x.units
 	}
 	test_get_query {
-		this.assert(this.q.isKindOf(MxQuery))
+		var q;
+		q = this.q;
+		this.assert(q.isKindOf(MxQuery));
+		x.insp("test_get_query should only have one unit in cache");
 	}
 	test_size {
 		this.assertEquals(this.q.size,1)
@@ -41,7 +44,14 @@ TestMxQuery : MxAppTester {
 		this.assertEquals(instrs.size,0);
 		this.assertEquals(nils.size,1);
 	}
+	test_do {
+		this.q.do { arg instr,i,uapp;
+			this.assertEquals(instr.class,Instr);
+			this.assertEquals(uapp.class,MxUnitApp);
+		}
+	}
 	test_mx_channels {
+		// test that it returns an MxQuery
 		var q;
 		q = x.channels;
 		this.assert(q.class == MxQuery);
@@ -56,6 +66,8 @@ TestMxQuery : MxAppTester {
 	test_units_of_mx {
 		var units;
 		units = this.q.units;
+		units.insp;
+		x.insp;
 		this.assertEquals(units.size,1);
 	}
 	test_units_of_iolets {
@@ -156,31 +168,41 @@ TestMxQuery : MxAppTester {
 		this.q.dup
 	}
 	test_moveBy {
-		var u,uu,moved,p,newPoint,v;
-		u = this.u;
+		var u,uu,moved,p,newPoint,v,q;
+
+		q = this.q;
+
+		u = x.at(2@2);
+
 		uu = x.at(u.point);
-		//uu.insp("uu");
+
 		p = u.point;
 		v = 1@1;
-		//uu.insp("uu");
 
-		//"MOVING".debug;
-		this.q.moveBy(v);
-		//uu.insp("uu after move");
-		// it is not found in channels ?
-		
+		q.moveBy(v);
+
 		newPoint = p + v;
+		// its nil
+		// meaning its
+		this.assertEquals( uu.point, newPoint, "uu app object should be at newPoint" );
+
 		moved = x.at(newPoint);
-		//[moved,uu,moved === uu,moved.model === uu.model].insp;
-		this.assertEquals(moved,uu);
-		this.assertEquals( x.at(p), nil , "unit should not be in old position")
+		// [moved,uu,moved === uu,moved.model,uu.model,moved.model === uu.model].insp;
+
+		// they are different MxUnit but contain same instr
+		// should be same unit, same app
+		// point of app should be new
+		this.assertEquals(moved,uu,"fetching at new point should return same app object");
+		this.assert(moved.model === uu.model,"app at new point should have same source as original appject");
+		this.assertEquals( x.at(p), nil , "there should be nil at the old position")
 	}
 	test_copyBy { arg vector;
-		var u,moved,p,newPoint,v,old;
-		u = this.u;
+		var u,moved,p,newPoint,v,old,q;
+		q = this.q;
+		u = x.at(2@2);
 		p = u.point;
 		v = 1@1;
-		this.q.copyBy(v);
+		q.copyBy(v);
 		newPoint = p + v;
 		moved = x.at(newPoint);
 		old = x.at(p);
@@ -190,29 +212,32 @@ TestMxQuery : MxAppTester {
 	
 	// channels
 	test_mute {
-		var c,u;
-		u = this.u;
+		var c,u,q;
+		q = this.q;
+		u = x.at(2@2);
 		c = x.channel(u.point.x);
-		this.q.mute;
+		q.mute;
 		this.assertEquals( c.muted, true );
-		this.q.mute(false);
+		q.mute(false);
 		this.assertEquals( c.muted, false );
 	}
 	test_solo {
-		var c,u;
-		u = this.u;
+		var c,u,q;
+		q = this.q;
+		u = x.at(2@2);
 		c = x.channel(u.point.x);
-		this.q.solo;
+		q.solo;
 		this.assertEquals( c.soloed, true );
-		this.q.solo(false);
+		q.solo(false);
 		this.assertEquals( c.soloed, false );
 	}
 	test_db {
-		var c,u;
-		u = this.u;
+		var c,u,q;
+		q = this.q;
+		u = x.at(2@2);
 		c = x.channel(u.point.x);
 		this.assertEquals( c.db, 0 );
-		this.q.db = -4;
+		q.db = -4;
 		this.assertEquals( c.db, -4 );
 	}
 }

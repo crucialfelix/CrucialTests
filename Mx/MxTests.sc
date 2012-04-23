@@ -65,29 +65,28 @@ TestMx : TestAbstractPlayer {
 	makePlayer {
 		^Mx.new
 	}
-	
+	p { ^Instr("_test_.Sin",{ SinOsc.ar }) }
 	test_put {
-		var x,p;
+		var x;
 		x = this.makePlayer;
-		p = Instr("_test_.Sin",{ SinOsc.ar });
-		x.put(0,0,p);
+		x.put(0,0,this.p);
 	}
 	test_move {
 		var x,p,moved,was;
 		x = this.makePlayer;
-		p = Instr("_test_.Sin",{ SinOsc.ar });
-		x.put(0,0,p);
+		x.put(0,0,this.p);
 		was = x.at(0,0);
 		x.move(0,0,1,1);
 		moved = x.at(1,1);
 		this.assert( moved === was , "should be in new position now");
 		this.assert(x.at(0,0).isNil,"old position should be nil");
+		// check if the channel has removed it from adding
+		// when it did extract
 	}
 	test_mx_is_set {
 		var x,p,unit;
 		x = Mx.new;
-		p = Instr("_test_.Sin",{ SinOsc.ar });
-		x.put(0,0,p);
+		x.put(0,0,this.p);
 		unit = x.at(0,0);
 		unit.use {
 			this.assert( ~mx === x,"Unit's ~mx should be set to the mx that it has been added to");
@@ -97,8 +96,8 @@ TestMx : TestAbstractPlayer {
 	test_varPooling {
 		var x,p,q,pu,qu;
 		x = this.makePlayer;
-		p = Instr("_test_.Sin",{ SinOsc.ar });
-		q = Instr("_test_.Sin",{ SinOsc.ar });
+		p = Instr("_test_.Sinp",{ SinOsc.ar });
+		q = Instr("_test_.Sinq",{ SinOsc.ar });
 		x.put(0,0,p);
 		x.put(0,1,q);
 		pu = x.at(0,0);

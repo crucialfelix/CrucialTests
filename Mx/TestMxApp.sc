@@ -16,6 +16,16 @@ MxAppTester : UnitTest {
 	}
 }
 
+TestMxApp : MxAppTester {
+
+	test_units {
+		var q;
+		this.u;
+		q = x.units;
+		this.assertEquals(q.class,MxQuery);
+	}
+}
+
 TestMxChannelApp : MxAppTester {
 	
 	test_at_empty {
@@ -29,6 +39,9 @@ TestMxChannelApp : MxAppTester {
 		this.assertEquals( u.class,MxUnitApp );
 		v = x.channel(0).at(0);
 		this.assert( u === v );
+
+		// test put twice to same spot
+		// old should not be in mxapp cache
 	}
 	test_add {
 		var u;
@@ -91,6 +104,13 @@ TestMxUnitApp : MxAppTester {
 		u = this.u;
 		u.moveTo(1@1);
 		u.moveTo(0@1);
+	}
+	test_moveBy {
+		var u,p;
+		u = this.u;
+		p = u.point;
+		u.moveBy(1@1);
+		this.assertEquals( u.point, p + (1@1) );
 	}
 	test_inlets {
 		this.u.inlets
