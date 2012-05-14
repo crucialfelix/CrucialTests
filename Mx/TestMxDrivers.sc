@@ -1,7 +1,7 @@
 
-TestCCBank : MxAppTester {
+TestDrivers : MxAppTester {
 	
-	test_connected {
+	test_ccbank_connected {
 		var c,cu,before,after,u;
 		c = CCBank( [(\freq -> 1 )] );
 		

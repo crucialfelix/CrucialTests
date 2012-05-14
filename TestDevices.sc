@@ -68,3 +68,13 @@ CALL STACK:
 	}
 }
 
+
+TestAPC40 : MxAppTester {
+
+	test_add {
+		var x;
+		MxUnit.initClass;
+		x = Mx.new.app;
+		x.add(APC40.new);
+	}
+}
